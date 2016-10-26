@@ -57,7 +57,7 @@ class JwtAuthenticatedAction @Inject() (userService: UserService, configuration:
 
   def validateJwtToken(token: String): Future[Option[User]] = {
     val expectedSubject = "hat"
-    val expectedResource = configuration.getString("hatters.address").get
+    val expectedResource = configuration.getString("service.address").get
     val expectedAccessCope = "validate"
     val maybeSignedJWT = Try(SignedJWT.parse(token))
 
