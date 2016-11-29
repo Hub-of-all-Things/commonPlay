@@ -8,6 +8,7 @@
 package org.hatdex.commonPlay.utils
 
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.{ Failure, Success, Try }
 
 object FutureTransformations {
   def transform[A](o: Option[Future[A]])(implicit ec: ExecutionContext): Future[Option[A]] =
@@ -15,4 +16,13 @@ object FutureTransformations {
 
   def transform[A](o: Option[Future[Option[A]]]): Future[Option[A]] =
     o.getOrElse(Future.successful(None))
+
+  def transform[A](t: Try[A])(implicit ec: ExecutionContext): Future[A] = {
+    Future {
+      t
+    }.flatMap {
+      case Success(s)     => Future.successful(s)
+      case Failure(error) => Future.failed(error)
+    }
+  }
 }
