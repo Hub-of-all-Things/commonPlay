@@ -9,7 +9,7 @@
 //
 //import com.mohiva.play.silhouette.api.Silhouette
 //import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
-//import models.auth.User
+//import org.hatdex.commonPlay.models.auth.User
 //import play.api.i18n.I18nSupport
 //
 //trait TokenAuthenticationController extends Silhouette[User, JWTAuthenticator] with I18nSupport {

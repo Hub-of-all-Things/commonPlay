@@ -167,6 +167,16 @@ class UserService @Inject() (dbapi: DBApi) extends IdentityService[User] {
     }
   }
 
+  def totalHats: Future[Long] = {
+    Future {
+      blocking {
+        db.withConnection { implicit connection =>
+          SQL("""SELECT COUNT(user_hat.user_id) FROM user_hat""").as(scalar[Long].single)
+        }
+      }
+    }
+  }
+
   private def upsertUser(theUser: User)(implicit connection: Connection): Try[UUID] = {
     Try {
       SQL(

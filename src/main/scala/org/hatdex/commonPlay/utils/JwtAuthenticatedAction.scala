@@ -65,11 +65,12 @@ class JwtAuthenticatedAction @Inject() (userService: UserService, configuration:
       val claimSet = signedJWT.getJWTClaimsSet
       val fresh = claimSet.getExpirationTime.after(DateTime.now().toDate)
       val subjectMatches = claimSet.getSubject == expectedSubject
-      val resourceMatches = Option(claimSet.getClaim("resource")).contains(expectedResource)
+      val resource = Option(claimSet.getClaim("resource")).map(r => java.net.URLDecoder.decode(r.asInstanceOf[String], "UTF-8"))
+      val resourceMatches = resource.exists(_.contains(expectedResource))
       val accessScopeMatches = Option(claimSet.getClaim("accessScope")).contains(expectedAccessCope)
 
       Logger.debug(s"Claimeset: $claimSet")
-      Logger.debug(s"Claimset issuer: ${claimSet.getIssuer}, fresh: $fresh, subjectMatches: $subjectMatches, resourceMatches: $resourceMatches (${claimSet.getClaim("resource")}, $expectedResource)")
+      Logger.debug(s"Claimset issuer: ${claimSet.getIssuer}, fresh: $fresh, subjectMatches: $subjectMatches, resourceMatches: $resourceMatches ($resource, $expectedResource)")
 
       if (fresh && subjectMatches && resourceMatches && accessScopeMatches) {
         val hatAddress = claimSet.getIssuer

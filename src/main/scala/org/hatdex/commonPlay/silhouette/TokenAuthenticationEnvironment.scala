@@ -15,7 +15,7 @@
 //import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 //import com.mohiva.play.silhouette.impl.repositories.DelegableAuthInfoRepository
 //import com.mohiva.play.silhouette.impl.util.{ BCryptPasswordHasher, SecureRandomIDGenerator }
-//import models.auth.User
+//import org.hatdex.commonPlay.models.auth.User
 //import play.api.Configuration
 //
 //import scala.concurrent.duration._

@@ -58,3 +58,18 @@ trait AuthenticationController extends Controller with I18nSupport {
       cfg.getAs[FiniteDuration]("cookieMaxAge"))
   }
 }
+
+trait ApiAuthenticationController extends Controller with I18nSupport {
+  def silhouette: Silhouette[TokenAuthenticationEnvironment]
+  def env: Environment[TokenAuthenticationEnvironment] = silhouette.env
+
+  def SecuredAction = silhouette.SecuredAction
+  def UnsecuredAction = silhouette.UnsecuredAction
+  def UserAwareAction = silhouette.UserAwareAction
+
+  implicit def securedRequest2User[A](implicit request: SecuredRequest[AuthenticationEnvironment, A]): User = request.identity
+  implicit def userAwareRequest2UserOpt[A](implicit request: UserAwareRequest[AuthenticationEnvironment, A]): Option[User] = request.identity
+
+  val clock: Clock
+  val configuration: Configuration
+}

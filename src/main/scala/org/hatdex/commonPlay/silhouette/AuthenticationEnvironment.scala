@@ -8,10 +8,15 @@
 package org.hatdex.commonPlay.silhouette
 
 import com.mohiva.play.silhouette.api.Env
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.authenticators.{ CookieAuthenticator, JWTAuthenticator }
 import org.hatdex.commonPlay.models.auth.User
 
 trait AuthenticationEnvironment extends Env {
   type I = User
   type A = CookieAuthenticator
+}
+
+trait TokenAuthenticationEnvironment extends Env {
+  type I = User
+  type A = JWTAuthenticator
 }
