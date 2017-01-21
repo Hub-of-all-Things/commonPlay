@@ -58,7 +58,9 @@ class UserService @Inject() (dbapi: DBApi) extends IdentityService[User] {
   }
 
   val userQuery = """
-    | SELECT * FROM market_user
+    | SELECT market_user.*,
+    |   user_role.approved, user_role.extra, user_role.role,
+    |   user_hat.address, user_hat.country, user_hat.public_key, user_hat.user_id FROM market_user
     | LEFT JOIN user_role ON user_role.user_id = market_user.id
     | LEFT JOIN user_hat ON user_hat.user_id = market_user.id
     """.stripMargin

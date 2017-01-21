@@ -16,37 +16,35 @@ import org.hatdex.commonPlay.models.auth.{ Hat, User, UserMarketProfile }
 
 object UserAnomParsers {
   def hatParser: RowParser[Hat] = {
-    get[UUID]("user_hat.id") ~
-      get[UUID]("user_hat.user_id") ~
-      get[String]("user_hat.country") ~
-      get[String]("user_hat.address") ~
-      get[String]("user_hat.public_key") map {
-        case id ~ userId ~ country ~ address ~ publicKey =>
+    get[UUID]("id") ~
+      get[String]("country") ~
+      get[String]("address") ~
+      get[String]("public_key") map {
+        case id ~ country ~ address ~ publicKey =>
           Hat(id, country, address, publicKey)
       }
   }
 
   def profileParser: RowParser[UserMarketProfile] = {
     get[UUID]("user_market_profile.id") ~
-      get[UUID]("user_market_profile.user_id") ~
       get[Option[String]]("user_market_profile.gender") ~
       get[Option[String]]("user_market_profile.age_group") ~
       get[Option[String]]("user_market_profile.country") ~
       get[Option[String]]("user_market_profile.city") map {
-        case id ~ userId ~ gender ~ ageGroup ~ country ~ city =>
+        case id ~ gender ~ ageGroup ~ country ~ city =>
           UserMarketProfile(id, gender, ageGroup, country, city)
       }
   }
 
   def userParser: RowParser[(User, Option[(UserRole, Boolean)])] = {
-    get[UUID]("market_user.id") ~
-      get[String]("market_user.email") ~
-      get[Boolean]("market_user.email_confirmed") ~
-      get[Boolean]("market_user.terms_agreed") ~
-      get[String]("market_user.password") ~
-      get[String]("market_user.nick") ~
-      get[String]("market_user.first_name") ~
-      get[String]("market_user.last_name") ~
+    get[UUID]("id") ~
+      get[String]("email") ~
+      get[Boolean]("email_confirmed") ~
+      get[Boolean]("terms_agreed") ~
+      get[String]("password") ~
+      get[String]("nick") ~
+      get[String]("first_name") ~
+      get[String]("last_name") ~
       hatParser.? ~
       profileParser.? ~
       UserRole.userRoleParser.? map {
