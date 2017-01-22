@@ -72,7 +72,7 @@ class JwtAuthenticatedAction @Inject() (userService: UserService, configuration:
       Logger.debug(s"Claimeset: $claimSet")
       Logger.debug(s"Claimset issuer: ${claimSet.getIssuer}, fresh: $fresh, subjectMatches: $subjectMatches, resourceMatches: $resourceMatches ($resource, $expectedResource)")
 
-      if (fresh && subjectMatches && resourceMatches && accessScopeMatches) {
+      if (fresh && resourceMatches && accessScopeMatches) {
         val hatAddress = claimSet.getIssuer
         val maybeUser = for {
           user <- userService.findByHatAddress(hatAddress).map(_.get)
