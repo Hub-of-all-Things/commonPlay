@@ -12,12 +12,24 @@ import java.util.UUID
 import org.hatdex.commonPlay.models.auth.roles._
 import org.hatdex.commonPlay.silhouette.IdentitySilhouette
 
-/*
- * A user can register some accounts from third-party services, then it will have access to different parts of the webpage. The 'master' privilege has full access.
- * Ex: ("master") -> full access to every point of the webpage.
- * Ex: ("serviceA") -> have access only to general and serviceA areas.
- * Ex: ("serviceA", "serviceB") -> have access only to general, serviceA and serviceB areas.
- */
+trait BaseUser extends IdentitySilhouette {
+  val id: Option[UUID]
+  val email: String
+  val emailConfirmed: Boolean
+  val password: String
+  val firstName: String
+  val lastName: String
+  protected val userRoles: List[UserRole]
+
+  def key: String = email
+
+  def fullName: String = s"$firstName $lastName"
+
+  def roles: List[UserRole] = {
+    userRoles
+  }
+}
+
 case class User(
     id: Option[UUID],
     email: String,
@@ -29,12 +41,8 @@ case class User(
     lastName: String,
     hatOwned: Option[Hat],
     marketProfile: Option[UserMarketProfile],
-    private val userRoles: List[UserRole],
-    pendingRoles: List[UserRole]) extends IdentitySilhouette {
-
-  def key: String = email
-
-  def fullName: String = s"$firstName $lastName"
+    protected val userRoles: List[UserRole],
+    pendingRoles: List[UserRole]) extends BaseUser {
 
   def withRoles(roles: UserRole*): User = {
     this.copy(userRoles = userRoles.filterNot(r => roles.map(_.title).contains(r.title)) ++ roles)
@@ -52,10 +60,6 @@ case class User(
   def withoutPendingRoles(roles: UserRole*): User = {
     val withoutRoles = pendingRoles.filterNot(r => roles.map(_.title).contains(r.title))
     this.copy(pendingRoles = withoutRoles)
-  }
-
-  def roles: List[UserRole] = {
-    userRoles
   }
 }
 

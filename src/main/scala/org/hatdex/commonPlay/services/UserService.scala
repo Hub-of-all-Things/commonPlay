@@ -18,18 +18,19 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import org.hatdex.commonPlay.models.auth.roles.UserRole
 import org.hatdex.commonPlay.models.auth.{ Hat, User, UserMarketProfile }
 import org.hatdex.commonPlay.silhouette.Implicits._
-import play.api.Logger
+import play.api.{ Configuration, Logger }
 import play.api.db.DBApi
 
 import scala.concurrent._
 import scala.util.{ Success, Try }
 
 @javax.inject.Singleton
-class UserService @Inject() (dbapi: DBApi) extends IdentityService[User] {
+class UserService @Inject() (dbapi: DBApi, configuration: Configuration) extends IdentityService[User] {
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = findByEmail(loginInfo)
   //  def save(user: User): Future[User] = User.save(user)
 
-  private val db = dbapi.database("marketsquare")
+  val commonPlayDatabase = configuration.getString("commonPlayDatabase").getOrElse("default")
+  private val db = dbapi.database(commonPlayDatabase)
   import UserAnomParsers._
   import play.api.libs.concurrent.Execution.Implicits._
 
