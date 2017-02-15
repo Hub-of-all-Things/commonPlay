@@ -1,7 +1,8 @@
 /*
- * Copyright (C) HAT Data Exchange Ltd - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
+ * Copyright (C) 2016 HAT Data Exchange Ltd - All Rights Reserved
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * Written by Andrius Aucinas <andrius.aucinas@hatdex.org>, 10 2016
  */
 
@@ -15,7 +16,7 @@
 //import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 //import com.mohiva.play.silhouette.impl.repositories.DelegableAuthInfoRepository
 //import com.mohiva.play.silhouette.impl.util.{ BCryptPasswordHasher, SecureRandomIDGenerator }
-//import models.auth.User
+//import org.hatdex.commonPlay.models.auth.User
 //import play.api.Configuration
 //
 //import scala.concurrent.duration._

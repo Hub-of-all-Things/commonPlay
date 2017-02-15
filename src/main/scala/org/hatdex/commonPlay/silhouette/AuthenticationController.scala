@@ -1,7 +1,8 @@
 /*
- * Copyright (C) HAT Data Exchange Ltd - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
+ * Copyright (C) 2016 HAT Data Exchange Ltd - All Rights Reserved
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * Written by Andrius Aucinas <andrius.aucinas@hatdex.org>, 10 2016
  */
 
@@ -57,4 +58,19 @@ trait AuthenticationController extends Controller with I18nSupport {
       cfg.getAs[FiniteDuration]("authenticatorIdleTimeout"),
       cfg.getAs[FiniteDuration]("cookieMaxAge"))
   }
+}
+
+trait ApiAuthenticationController extends Controller with I18nSupport {
+  def silhouette: Silhouette[TokenAuthenticationEnvironment]
+  def env: Environment[TokenAuthenticationEnvironment] = silhouette.env
+
+  def SecuredAction = silhouette.SecuredAction
+  def UnsecuredAction = silhouette.UnsecuredAction
+  def UserAwareAction = silhouette.UserAwareAction
+
+  implicit def securedRequest2User[A](implicit request: SecuredRequest[AuthenticationEnvironment, A]): User = request.identity
+  implicit def userAwareRequest2UserOpt[A](implicit request: UserAwareRequest[AuthenticationEnvironment, A]): Option[User] = request.identity
+
+  val clock: Clock
+  val configuration: Configuration
 }

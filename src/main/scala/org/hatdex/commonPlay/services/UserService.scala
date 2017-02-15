@@ -1,8 +1,9 @@
 /*
- * Copyright (C) HAT Data Exchange Ltd - All Rights Reserved
- *  Unauthorized copying of this file, via any medium is strictly prohibited
- *  Proprietary and confidential
- *  Written by Andrius Aucinas <andrius.aucinas@hatdex.org>, 10 2016
+ * Copyright (C) 2016 HAT Data Exchange Ltd - All Rights Reserved
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * Written by Andrius Aucinas <andrius.aucinas@hatdex.org>, 10 2016
  */
 
 package org.hatdex.commonPlay.services
@@ -18,18 +19,19 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import org.hatdex.commonPlay.models.auth.roles.UserRole
 import org.hatdex.commonPlay.models.auth.{ Hat, User, UserMarketProfile }
 import org.hatdex.commonPlay.silhouette.Implicits._
-import play.api.Logger
+import play.api.{ Configuration, Logger }
 import play.api.db.DBApi
 
 import scala.concurrent._
 import scala.util.{ Success, Try }
 
 @javax.inject.Singleton
-class UserService @Inject() (dbapi: DBApi) extends IdentityService[User] {
+class UserService @Inject() (dbapi: DBApi, configuration: Configuration) extends IdentityService[User] {
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = findByEmail(loginInfo)
   //  def save(user: User): Future[User] = User.save(user)
 
-  private val db = dbapi.database("marketsquare")
+  val commonPlayDatabase = configuration.getString("commonPlayDatabase").getOrElse("default")
+  private val db = dbapi.database(commonPlayDatabase)
   import UserAnomParsers._
   import play.api.libs.concurrent.Execution.Implicits._
 
@@ -58,7 +60,9 @@ class UserService @Inject() (dbapi: DBApi) extends IdentityService[User] {
   }
 
   val userQuery = """
-    | SELECT * FROM market_user
+    | SELECT market_user.*,
+    |   user_role.approved, user_role.extra, user_role.role,
+    |   user_hat.address, user_hat.country, user_hat.public_key, user_hat.user_id FROM market_user
     | LEFT JOIN user_role ON user_role.user_id = market_user.id
     | LEFT JOIN user_hat ON user_hat.user_id = market_user.id
     """.stripMargin
@@ -162,6 +166,16 @@ class UserService @Inject() (dbapi: DBApi) extends IdentityService[User] {
             .on('start -> (page - 1) * usersPerPage, 'count -> usersPerPage)
             .as(userParser.*)
           aggregateRoles(usersWithRoles).sortBy(_.nick)
+        }
+      }
+    }
+  }
+
+  def totalHats: Future[Long] = {
+    Future {
+      blocking {
+        db.withConnection { implicit connection =>
+          SQL("""SELECT COUNT(user_hat.user_id) FROM user_hat""").as(scalar[Long].single)
         }
       }
     }
