@@ -62,6 +62,10 @@ case class User(
     val withoutRoles = pendingRoles.filterNot(r => roles.map(_.title).contains(r.title))
     this.copy(pendingRoles = withoutRoles)
   }
+
+  def cleaned: User = {
+    this.copy(email = "", password = "", userRoles = List(), pendingRoles = List())
+  }
 }
 
 object User {
