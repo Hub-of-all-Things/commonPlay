@@ -69,14 +69,12 @@ class Module extends AbstractModule with ScalaModule {
   def provideEnvironment(
     userService: UserService,
     authenticatorService: AuthenticatorService[CookieAuthenticator],
-    eventBus: EventBus
-  ): Environment[AuthenticationEnvironment] = {
+    eventBus: EventBus): Environment[AuthenticationEnvironment] = {
     Environment[AuthenticationEnvironment](
       userService,
       authenticatorService,
       Seq(),
-      eventBus
-    )
+      eventBus)
   }
 
   /**
@@ -132,8 +130,7 @@ class Module extends AbstractModule with ScalaModule {
     fingerprintGenerator: FingerprintGenerator,
     idGenerator: IDGenerator,
     configuration: Configuration,
-    clock: Clock
-  ): AuthenticatorService[CookieAuthenticator] = {
+    clock: Clock): AuthenticatorService[CookieAuthenticator] = {
     val config = configuration.underlying.as[CookieAuthenticatorSettings]("silhouette.authenticator")
     val encoder = new CrypterAuthenticatorEncoder(crypter)
     new CookieAuthenticatorService(config, None, cookieSigner, encoder, fingerprintGenerator, idGenerator, clock)
@@ -160,8 +157,7 @@ class Module extends AbstractModule with ScalaModule {
   @Provides
   def provideCredentialsProvider(
     authInfoRepository: AuthInfoRepository,
-    passwordHasherRegistry: PasswordHasherRegistry
-  ): CredentialsProvider = {
+    passwordHasherRegistry: PasswordHasherRegistry): CredentialsProvider = {
     new CredentialsProvider(authInfoRepository, passwordHasherRegistry)
   }
 }

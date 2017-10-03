@@ -19,15 +19,13 @@ case class UserMarketProfile(
 
 object UserMarketProfile {
   val genders = Seq(
-    "male", "female"
-  )
+    "male", "female")
   val ageGroups = Seq(
     "18 – 24",
     "25 – 34",
     "35 – 44",
     "45 – 54",
     "55 – 64",
-    "65+"
-  )
+    "65+")
 }
 
